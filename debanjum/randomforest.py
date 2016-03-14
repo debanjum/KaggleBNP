@@ -13,8 +13,8 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.cross_validation import StratifiedKFold
 
 # Load Training, Testing Data
-train = pd.read_csv('../data/data/train.csv')
-test = pd.read_csv("../data/data/test.csv")
+train = pd.read_csv('train.csv')
+test = pd.read_csv('test.csv')
 
 # Extract Target Training Output into a Numpy Array
 target = np.array(train['target'])

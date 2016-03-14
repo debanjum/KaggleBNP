@@ -13,8 +13,9 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.cross_validation import StratifiedKFold
 
 # Load Training, Testing Data
-train = pd.read_csv('../data/data/train.csv')
-test = pd.read_csv("../data/data/test.csv")
+train = pd.read_csv('train.csv')
+test = pd.read_csv("test.csv")
+print "Loaded Data"
 
 # Extract Target Training Output into a Numpy Array
 target = np.array(train['target'])
@@ -32,6 +33,7 @@ test = test.drop(['ID'], axis=1)
 # Remove Categorical Features
 train = train[[column for column in train.columns[2:] if train[column].dtype != 'object']]
 test = test[[column for column in test.columns if test[column].dtype != 'object']]
+print "Remove Categorical Features"
 
 # Replace NaN values by feature medians in dataset
 #  In training data
@@ -42,30 +44,32 @@ train =impute.transform(train)
 #  In testing data
 impute.fit(test)
 test = impute.transform(test)
+print "Impute Data"
 
 # Normalize Training and Testing Dataset
 scaler = StandardScaler().fit(train)        # find mean and std based on training data to normalize for zero mean and unit variance
 train = scaler.transform(train)             # normalize training data
 test = scaler.transform(test)               # normalize testing data base on normalization fit for training data
+print "Normalize Dataset"
 
 # Decision Tree Classification
-#clf = DecisionTreeClassifier(max_depth=None, min_samples_split=1,random_state=0)                   # create classifier
-#clf = clf.fit(train,target)
-#scores = cross_val_score(clf, train, target)                                                       # get cross validation scores
-#print "Decision Tree Cross Validation Scores\nMean: %f\nStd: %f" % (scores.mean(), scores.std())   # print cross validation mean, deviation
-#dtpredict = clf.predict_proba(test)[:,1]                                                           # make predictions
-#submit = pd.DataFrame({'ID': testid, 'PredictedProb': dtpredict})
-#submit.to_csv("decisiontree_submission.csv", index=False)
-#
-# Random Forest Classification
-clf=RandomForestClassifier(n_estimators=1800)
-clf=clf.fit(train,target)
-scores = cross_val_score(clf, train, target)
-print "Random Forest Cross Validation Scores\nMean: %f\nStd: %f" % (scores.mean(), scores.std())
-rfpredict = clf.predict_proba(test)[:,1]
-submit = pd.DataFrame({'ID': testid, 'PredictedProb': rfpredict})
-submit.to_csv("randomforest_submission.csv", index=False)
+clf = DecisionTreeClassifier(max_depth=None, min_samples_split=1,random_state=0)                   # create classifier
+clf = clf.fit(train,target)
+scores = cross_val_score(clf, train, target)                                                       # get cross validation scores
+print "Decision Tree Cross Validation Scores\nMean: %f\nStd: %f" % (scores.mean(), scores.std())   # print cross validation mean, deviation
+dtpredict = clf.predict_proba(test)[:,1]                                                           # make predictions
+submit = pd.DataFrame({'ID': testid, 'PredictedProb': dtpredict})
+submit.to_csv("decisiontree_submission.csv", index=False)
 
+# Random Forest Classification
+#clf=RandomForestClassifier(n_estimators=1800)
+#clf=clf.fit(train,target)
+#scores = cross_val_score(clf, train, target)
+#print "Random Forest Cross Validation Scores\nMean: %f\nStd: %f" % (scores.mean(), scores.std())
+#rfpredict = clf.predict_proba(test)[:,1]
+#submit = pd.DataFrame({'ID': testid, 'PredictedProb': rfpredict})
+#submit.to_csv("randomforest_submission.csv", index=False)
+#
 
 # XGBoost Classification
 #xgtrain = xgb.DMatrix(train, target); xgtest = xgb.DMatrix(test); 
